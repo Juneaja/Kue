@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enythings kue</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            padding: 1rem 0;
+            position: fixed; width: 100%; top: 0; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        nav { 
+            max-width: 1200px; margin: 0 auto; 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 0 2rem; 
+        }
+        .logo { 
+            font-size: 1.8rem; font-weight: bold; color: #d63384; 
+        }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { 
+            text-decoration: none; color: #333; font-weight: 500; 
+            transition: color 0.3s; 
+        }
+        .nav-links a:hover { color: #d63384; }
+        .cart-btn {
+            background: #d63384; color: white; border: none; padding: 0.8rem 1.5rem;
+            border-radius: 25px; cursor: pointer; font-weight: 500; transition: all 0.3s;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .cart-btn:hover { background: #c02569; transform: translateY(-2px); }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            height: 100vh; display: flex; align-items: center; justify-content: center;
+            text-align: center; color: white; margin-top: 70px;
+        }
+        .hero-content h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+        .hero-content p { font-size: 1.3rem; margin-bottom: 2rem; }
+        .cta-btn {
+            background: #d63384; color: white; padding: 1rem 2.5rem; border: none;
+            border-radius: 50px; font-size: 1.2rem; cursor: pointer; transition: all 0.3s;
+            text-decoration: none; display: inline-block;
+        }
+        .cta-btn:hover { background: #c02569; transform: translateY(-3px); }
+
+        /* Products */
+        .products { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: #d63384; }
+        .products-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;
+        }
+        .product-card {
+            background: white; border-radius: 20px; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: all 0.3s;
+        }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .product-image {
+            height: 250px; background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;
+        }
+        .product-info { padding: 1.5rem; }
+        .product-title { font-size: 1.4rem; margin-bottom: 0.5rem; }
+        .product-price { font-size: 1.8rem; font-weight: bold; color: #d63384; margin-bottom: 1rem; }
+        .add-to-cart {
+            width: 100%; background: #28a745; color: white; border: none; padding: 1rem;
+            border-radius: 10px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s;
+        }
+        .add-to-cart:hover { background: #218838; transform: translateY(-2px); }
+
+        /* Cart Modal */
+        .cart-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 2000;
+        }
+        .cart-content {
+            background: white; margin: 5% auto; padding: 2rem; border-radius: 20px;
+            max-width: 500px; max-height: 80vh; overflow-y: auto;
+        }
+        .close-cart {
+            background: #dc3545; color: white; border: none; padding: 0.5rem 1rem;
+            border-radius: 5px; cursor: pointer; float: right; font-size: 1.1rem;
+        }
+        .cart-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 0; border-bottom: 1px solid #eee;
+        }
+        .quantity-controls {
+            display: flex; gap: 0.5rem; align-items: center;
+        }
+        .qty-btn {
+            background: #007bff; color: white; border: none; width: 35px; height: 35px;
+            border-radius: 50%; cursor: pointer; font-weight: bold;
+        }
+        .qty-btn:hover { background: #0056b3; }
+        .remove-btn {
+            background: #dc3545; color: white; border: none; padding: 0.3rem 0.8rem;
+            border-radius: 5px; cursor: pointer;
+        }
+        .checkout-btn {
+            width: 100%; background: #d63384; color: white; border: none; padding: 1.2rem;
+            border-radius: 10px; font-size: 1.2rem; cursor: pointer; margin-top: 1.5rem;
+            font-weight: bold;
+        }
+        .checkout-btn:hover { background: #c02569; }
+
+        /* Footer */
+        footer {
+            background: #333; color: white; text-align: center; padding: 3rem 2rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed; top: 100px; right: 20px; background: #28a745; color: white;
+            padding: 1rem 2rem; border-radius: 10px; z-index: 3000;
+            transform: translateX(400px); transition: all 0.3s; font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .products-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo"><i class="fas fa-birthday-cake"></i> Rumah Kue Lezat</div>
+            <ul class="nav-links">
+                <li><a href="#home">Beranda</a></li>
+                <li><a href="#products">Produk</a></li>
+            </ul>
+            <button class="cart-btn" onclick="openCart()">
+                <i class="fas fa-shopping-cart"></i> Keranjang <span id="cartCount">(0)</span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>🍰 Kue Lezat Segala Rasa</h1>
+            <p>Pesan kue kering, kue basah, tart untuk segala acara!</p>
+            <a href="#products" class="cta-btn">Pesan Sekarang</a>
+        </div>
+    </section>
+
+    <!-- Products -->
+    <section class="products" id="products">
+        <h2 class="section-title">🍪 Menu Terbaik Kami</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-image"><i class="fas fa-cookie-bite"></i></div>
+                <div class="product-info">
+                    <h3 class="product-title">Kue Kering Assortment</h3>
+                    <div class="product-price">Rp 75.000</div>
+                    <button class="add-to-cart" onclick="addToCart('Kue Kering Assortment', 75000)">
+                        <i class="fas fa-plus"></i> Tambah
+                    </button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"><i class="fas fa-cheese"></i></div>
+                <div class="product-info">
+                    <h3 class="product-title">Cheese Cake Premium</h3>
+                    <div class="product-price">Rp 120.000</div>
+                    <button class="add-to-cart" onclick="addToCart('Cheese Cake Premium', 120000)">
+                        <i class="fas fa-plus"></i> Tambah
+                    </button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image"><i class="fas fa-birthday-cake"></i></div>
+                <div class="product-info">
+                    <h3 class="product-title">Tart Ulang Tahun</h3>
+                    <div class="product-price">Rp 250.000</div>
+                    <button class="add-to-cart" onclick="addToCart('Tart Ulang Tahun', 250000)">
+                        <i class="fas fa-plus"></i> Tambah
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <button class="close-cart" onclick="closeCart()">✕</button>
+            <h2><i class="fas fa-shopping-cart"></i> Keranjang Belanja</h2>
+            <div id="cartItems">Keranjang kosong</div>
+            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 2px solid #eee;">
+                <h3 style="text-align: center;">Total: <span id="cartTotal" style="color: #d63384; font-size: 1.5rem;">Rp 0</span></h3>
+                <button class="checkout-btn" onclick="checkout()">
+                    <i class="fab fa-whatsapp"></i> Kirim Pesanan ke WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <h3>📞 Hubungi Kami</h3>
+        <p>WhatsApp: <strong>0896-0233-7878</strong></p>
+        <p>📍 jetis indah lamongan</p>
+    </footer>
+
+    <script>
+        let cart = [];
+        const WA_NUMBER = "6289602337878"; // ❌ GANTI INI DENGAN NOMOR WA KAMU!
+
+        function formatRupiah(angka) {
+            return 'Rp ' + angka.toLocaleString('id-ID');
+        }
+
+        function addToCart(name, price) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ name, price, quantity: 1 });
+            }
+            updateCartDisplay();
+            showToast('Ditambahkan ke keranjang! ✅');
+        }
+
+        function updateCartDisplay() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = `(${count})`;
+            
+            const cartItems = document.getElementById('cartItems');
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="text-align:center;color:#666;">Keranjang kosong</p>';
+            } else {
+                cartItems.innerHTML = cart.map((item, index) => `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <small>${formatRupiah(item.price)} × ${item.quantity}</small>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" onclick="updateQty(${index}, -1)">−</button>
+                            <span style="font-weight:bold;min-width:30px;">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
+                            <button class="remove-btn" onclick="removeItem(${index})">🗑️</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('cartTotal').textContent = formatRupiah(total);
+        }
+
+        function updateQty(index, change) {
+            cart[index].quantity += change;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartDisplay();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCartDisplay();
+        }
+
+        function openCart() {
+            document.getElementById('cartModal').style.display = 'block';
+            updateCartDisplay();
+        }
+
+        function closeCart() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                showToast('Keranjang kosong!', true);
+                return;
+            }
+
+            // BUAT PESAN WA
+            let pesan = `🎂 *PESANAN KUE LEZAT* 🎂\n\n`;
+            pesan += `📋 *Rincian Pesanan:*\n`;
+            let total = 0;
+            
+            cart.forEach(item => {
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+                pesan += `• ${item.name} (${item.quantity}x)\n`;
+                pesan += `  ${formatRupiah(item.price)} = ${formatRupiah(subtotal)}\n\n`;
+            });
+            
+            pesan += `💰 *TOTAL BAYAR: ${formatRupiah(total)}*\n\n`;
+            pesan += `📞 Mohon konfirmasi pesanan\n`;
+            pesan += `⏰ Siap diambil hari ini\n\n`;
+            pesan += `🙏 Terima kasih!`;
+
+            // LANGSUNG BUKA WHATSAPP
+            const waLink = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(pesan)}`;
+            window.open(waLink, '_blank');
+            
+            showToast('Pesanan terkirim ke WhatsApp! 🎉');
+            cart = [];
+            updateCartDisplay();
+            closeCart();
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.background = isError ? '#dc3545' : '#28a745';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                toast.style.transform = 'translateX(400px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Event listeners
+        window.onclick = (e) => {
+            if (e.target.id === 'cartModal') closeCart();
+        };
+        
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href')).scrollIntoView({behavior: 'smooth'});
+            });
+        });
+    </script>
+</body>
+</html>
