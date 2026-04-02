@@ -6,6 +6,17 @@
     <title>Enythings kue</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+         .svg-logo {
+            width: 300px;
+            height: 300px;
+            filter: drop-shadow(0 0 20px #00ff88);
+            animation: rotate 10s linear infinite;
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', sans-serif; 
@@ -138,6 +149,33 @@
     </style>
 </head>
 <body>
+    <svg class="svg-logo" viewBox="0 0 200 200">
+        <!-- Background circle -->
+        <circle cx="100" cy="100" r="90" fill="none" stroke="#667eea" stroke-width="8" stroke-dasharray="10,5"/>
+        
+        <!-- Code brackets -->
+        <text x="50" y="80" font-family="Courier New, monospace" font-size="20" font-weight="bold" fill="#00ff88">STUDIOPA</text>
+        <text x="150" y="80" font-family="Courier New, monospace" font-size="20" font-weight="bold" fill="#00ff88"></text>
+        
+        <!-- DEV text -->
+        <text x="100" y="130" font-family="Courier New, monospace" font-size="20" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="2">NGODINGASIK</text>
+        
+        <!-- Binary code -->
+        <text x="30" y="170" font-family="Courier New, monospace" font-size="14" fill="#667eea"></text>
+        <text x="160" y="170" font-family="Courier New, monospace" font-size="14" fill="#667eea"></text>
+        
+        <!-- Glow effect -->
+        <defs>
+            <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge> 
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
+    </svg>
+    
     <!-- Header -->
     <header>
         <nav>
